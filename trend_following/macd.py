@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # @Time    : 2023/3/30 19:19
 # @Author  : 
-# @File    : MACD.py
+# @File    : macd.py
 
 import pandas as pd
 import numpy as np
