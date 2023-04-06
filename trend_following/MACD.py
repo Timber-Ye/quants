@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import talib
 
 # 读取数据
-data = pd.read_csv('data/SH000300.csv')
+data = pd.read_csv('D:/lianghua/ok/quants/trend_following/data/SH000300.csv')
 data.rename(columns={'Close': 'close', 'trade_dt': 'date'}, inplace=True)
 
 # 计算 MACD
