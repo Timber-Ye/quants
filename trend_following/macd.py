@@ -52,7 +52,7 @@ for i in range(1, len(data)):
 data['Returns'] = np.log(data['close'] / data['close'].shift(1))
 data['Cumulative_Returns'] = data['Returns'].cumsum()
 
-plt.figure(2)
+plt.figure(1)
 data['Cumulative_Returns'].plot()
 plt.show()
 

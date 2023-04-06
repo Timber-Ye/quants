@@ -1,23 +1,15 @@
 # !/usr/bin/env python
 # -*- coding: utf-8 -*-
-# @Time    : 2023/4/6 19:14
-# @Author  : 
+# @Time    : Fri Mar 31 18:06:07 2023
+# @Author  : weixh
 # @File    : ma_stoploss.py.py
-
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Mar 31 18:06:07 2023
-
-@author: weixh
-"""
-
 
 import pandas as pd
 import matplotlib.pyplot as plt
 
 # 读取数据
-data = pd.read_csv('C:/weixh/HFData/SH000300.csv')
-data = data[['trade_dt', 'Open', 'High', 'Low', 'Close']]
+data = pd.read_csv('Data/SH000300.csv')
+data = data[['Date', 'Open', 'High', 'Low', 'Close']]
 data.columns = ['date', 'open', 'high', 'low', 'price']
 data['date'] = pd.to_datetime(data['date'])
 
