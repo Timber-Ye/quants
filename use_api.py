@@ -81,7 +81,7 @@ def ma_sloss_step(k_data):
     if (signal == 1) & (position == 0) & (holding_period == 0):
         return 1
     # 离场信号
-    elif ((signal == -1) | (holding_period >= max_holding_period)) & (position != 0):
+    elif ((signal == -1) | (holding_period >= args.max_holding_period)) & (position != 0):
         return -1
     # 止损信号
     elif (k_data['price'][end] < stop_loss) & (position != 0):
@@ -89,11 +89,11 @@ def ma_sloss_step(k_data):
     # 移动止损信号
     elif (k_data['price'][end]>trailing_high)&(position!=0):
         trailing_high = k_data['price'][end]
-        trailing_low = k_data['price'][end] * trailing_stop_multiplier
+        trailing_low = k_data['price'][end] * args.trailing_stop_multiplier
         stop_loss = trailing_low
     elif (k_data['price'][end] < trailing_low) & (position != 0):
         trailing_low = k_data['price'][end]
-        trailing_high = k_data['price'][end] * trailing_stop_multiplier
+        trailing_high = k_data['price'][end] * args.trailing_stop_multiplier
         stop_loss = trailing_high
 
     # 更新持仓期
