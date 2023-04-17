@@ -13,5 +13,9 @@ parser.add_argument('--max_holding_period',default='20',type=int,help='最长持
 parser.add_argument('--stop_loss_period',default='5',type=int,help='止损触发期')
 parser.add_argument('--trailing_stop_multiplier',default='0.98',type=float,help='移动止损倍数')
 parser.add_argument('--trailing_stop_period',default='5',type=int,help='移动止损触发期')
+parser.add_argument('--ccy_sell',default='BTC',help='查询余额使用')
+parser.add_argument('--ccy_buy',default='USDT',help='查询余额使用')
+parser.add_argument('--instId',default='BTC-USDT',help='购买和查询k线图使用')
+parser.add_argument('--bar',default='15m',help='查询k线图的时间间隔')
 
 args=parser.parse_args()
