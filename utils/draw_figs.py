@@ -3,6 +3,7 @@
 # @Time    : 2023/4/13 18:46
 # @Author  : 
 # @File    : draw_figs.py
+import matplotlib.pyplot as plt
 import mplfinance as mpf
 
 # 设置mplfinance的蜡烛颜色，up为阳线颜色，down为阴线颜色
@@ -17,7 +18,7 @@ my_style = mpf.make_mpf_style(marketcolors=my_color,
                               gridcolor='(0.82, 0.83, 0.85)')
 
 
-def K_candle_plot(data):
+def K_candle_plot(data, title=None, save_dir=None):
     """
     绘制K线图. 数据准备：
 
@@ -43,15 +44,25 @@ def K_candle_plot(data):
         mpf.make_addplot(data, type='candle', panel=2)
 
     ]
-    mpf.plot(data, type='candle',
-                    mav=(2, 5),
-                    addplot=add_plot,
-                    volume=True,
-                    figscale=1.5,
-                    title='Candle', figratio=(5, 5), ylabel='price', ylabel_lower='volume',
-                    )
 
-    # plt.show()  # 显示
+    if save_dir is not None:
+        mpf.plot(data, type='candle',
+                        mav=(2, 5),
+                        addplot=add_plot,
+                        volume=True,
+                        figscale=1.5,
+                        title=title, figratio=(5, 5), ylabel='price', ylabel_lower='volume',
+                        savefig=save_dir
+                        )
+
+    else:
+        mpf.plot(data, type='candle',
+                 mav=(2, 5),
+                 addplot=add_plot,
+                 volume=True,
+                 figscale=1.5,
+                 title=title, figratio=(5, 5), ylabel='price', ylabel_lower='volume'
+                 )
 
 
 def K_candle_plot_MACD(data, volume=False):
