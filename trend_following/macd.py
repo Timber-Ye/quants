@@ -29,7 +29,7 @@ def MACD_following(data):
 
 def test_main():
     # 读取数据
-    data = pd.read_csv('data/SH000300.csv')
+    data = pd.read_csv('../data/SH000300.csv')
     data.rename(columns={'Close': 'close', 'trade_dt': 'date'}, inplace=True)
 
     # 计算 MACD
