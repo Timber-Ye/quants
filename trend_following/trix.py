@@ -9,7 +9,7 @@ import talib
 import matplotlib.pyplot as plt
 
 # 读取数据
-data = pd.read_csv('data/SH000300.csv')
+data = pd.read_csv('../data/SH000300.csv')
 data = data[['Date', 'Open', 'High', 'Low', 'Close']]
 data.columns = ['date', 'open', 'high', 'low', 'price']
 data['date'] = pd.to_datetime(data['date'])
