@@ -33,28 +33,3 @@ def data_replay(data):
     for _i in range(len(data)):
         yield data.iloc[_i].to_dict()
 
-
-class StreamingData:
-    """
-    {'Date', 'High', 'Low', 'Open', 'Close', 'Volume'}
-    """
-    def __init__(self, init_data):
-        self.data = init_data.copy()
-        self.num = len(self.data)
-
-    def append(self, item):
-        self.data.loc[self.num] = item
-        self.num = self.num + 1
-
-    def get_data(self):
-        return self.data
-
-    def get_close_price(self, num=1):
-        if num is None or num > self.num:
-            return self.data['Close'].copy().values
-        else:
-            return self.data['Close'].tail(num).copy().values
-
-
-    def to_csv(self, dir):
-        self.data.to_csv(dir)
