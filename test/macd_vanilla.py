@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # @Time    : 2023/4/19 21:25
 # @Author  : 
-# @File    : macd_test.py
+# @File    : macd_vanilla.py
 
 import os
 import sys
@@ -14,7 +14,7 @@ PROJECT_ROOT = os.path.join(os.path.dirname(__file__), '..')
 sys.path.append(PROJECT_ROOT)
 
 from trend_following.indicators import MACD
-from trend_following.vanilla_order import vanilla_order
+from trend_following.vanilla_order import Vanilla
 from common.use_api import Signal, data_replay
 
 
@@ -24,7 +24,7 @@ def test_online(full_data):
     data = pd.DataFrame(columns=['Date', 'High', 'Low', 'Open', 'Close', 'Volume', 'MACD',
                                  'Signal', 'Signal_Cross', 'Capital', 'Shares'])
     macd = MACD()
-
+    order = Vanilla()
     for i, new in enumerate(data_replay(full_data)):
         data.loc[i] = new
         new['Signal_Cross'], new['MACD'], new['Signal'] = macd.cal_inc(data)
@@ -35,17 +35,17 @@ def test_online(full_data):
             new['Shares'] = init_capital / new['Close']
 
         else:
-            new['Capital'], new['Shares'] = vanilla_order(new['Signal_Cross'],
-                                                          new['Close'],
-                                                          data['Capital'][i-1],
-                                                          data['Shares'][i-1])
+            new['Capital'], new['Shares'] = order(new['Signal_Cross'],
+                                                  new['Close'],
+                                                  data['Capital'][i-1],
+                                                  data['Shares'][i-1])
 
         data.loc[i] = new
 
     data['Returns'] = np.log(data['Close'] / data['Close'].shift(1))
     data['Cumulative_Returns'] = data['Returns'].cumsum()
 
-    data.to_csv(os.path.join(PROJECT_ROOT + '/data/') + 'macd_test_online.csv')
+    data.to_csv(os.path.join(PROJECT_ROOT + '/data/') + 'macd_test_online-2.csv')
 
 
 def test_offline(data):
