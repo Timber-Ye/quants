@@ -34,11 +34,11 @@ class Vanilla:
         new_pos = position
 
         # 入场信号
-        if signal == Signal.ToBuy:
+        if signal == Signal.ToBuy and position == 0:
             new_cap, new_pos = self.__enter_position(price, capital, position)
 
         # 离场信号
-        if signal == Signal.ToSell:
+        if signal == Signal.ToSell and position != 0:
             new_cap, new_pos = self.__exit_position(price, capital, position)
 
         return new_cap, new_pos
