@@ -14,21 +14,8 @@ PROJECT_ROOT = os.path.join(os.path.dirname(__file__), '..')
 sys.path.append(PROJECT_ROOT)
 
 from trend_following.indicators import MACD
+from trend_following.vanilla_order import vanilla_order
 from common.use_api import Signal, data_replay
-
-
-def order(signal, price, capital, shares):
-    if signal == Signal.ToBuy:
-        new_shares = capital / price
-        new_capital = 0
-    elif signal == Signal.ToSell:
-        new_capital = shares * price
-        new_shares = 0
-    else:
-        new_capital = capital
-        new_shares = shares
-
-    return new_capital, new_shares
 
 
 def test_online(full_data):
@@ -48,10 +35,10 @@ def test_online(full_data):
             new['Shares'] = init_capital / new['Close']
 
         else:
-            new['Capital'], new['Shares'] = order(new['Signal_Cross'],
-                                                  new['Close'],
-                                                  data['Capital'][i-1],
-                                                  data['Shares'][i-1])
+            new['Capital'], new['Shares'] = vanilla_order(new['Signal_Cross'],
+                                                          new['Close'],
+                                                          data['Capital'][i-1],
+                                                          data['Shares'][i-1])
 
         data.loc[i] = new
 
