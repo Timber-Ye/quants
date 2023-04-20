@@ -14,6 +14,9 @@ from common.use_api import Signal
 
 
 class StopLossOrder:
+    """
+    Basic Knowledge: https://www.investopedia.com/terms/s/stop-lossorder.asp
+    """
     def __init__(self,
                  entry_multiplier=1.01,  # 入场倍数
                  exit_multiplier=0.99,  # 离场倍数
