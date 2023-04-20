@@ -12,13 +12,16 @@ class Signal(Enum):
     Stay = 0
     Hold = 0
 
-    Enter = 1  # 入场
-    Overbought = 1
+    # 入场
+    Enter = 1
     ToBuy = 1
 
-    Exit = -1  # 离场
-    Oversold = -1
+    # 离场
+    Exit = -1
     ToSell = -1
+
+    # 其他
+    StopLoss = 2
 
 
 def data_replay(data):
