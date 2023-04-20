@@ -112,3 +112,44 @@ class BollingerBands:
 
         return signal, ma, std, upper, lower
 
+
+class TRIX:
+    """
+    Basic Knowledge: https://www.investopedia.com/terms/t/trix.asp
+    """
+    def __init__(self, timeperiod=30, buy_threshold=2e-3, sell_threshold=-2e-3):
+        self.timeperiod = timeperiod
+        self.buy_threshold = buy_threshold
+        self.sell_threshold = sell_threshold
+
+        self.last_trix = 0
+
+    def cal(self, data):
+        trix = talib.TRIX(data['Close'].copy().values, timeperiod=self.timeperiod)
+        signal = np.insert(np.diff(trix.flatten()), 0, 0)
+
+        signal_cross = np.full(trix.shape, Signal.Hold)
+        for i in range(0, len(data)):
+            if signal[i] > self.buy_threshold:  # 金叉买入
+                signal_cross[i] = Signal.Enter
+            elif signal[i] < self.sell_threshold:  # 死叉卖出
+                signal_cross[i] = Signal.Exit
+
+        return signal_cross, trix, signal
+
+    def cal_inc(self, data):
+        trix = stream.TRIX(data['Close'].copy().values, timeperiod=self.timeperiod)
+        signal = trix - self.last_trix
+
+        self.last_trix = trix
+
+        signal_cross = Signal.Hold
+        if signal > self.buy_threshold:  # 金叉买入
+            signal_cross = Signal.Enter
+        elif signal < self.sell_threshold:  # 死叉卖出
+            signal_cross = Signal.Exit
+
+        return signal_cross, trix, signal
+
+
+
