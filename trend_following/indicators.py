@@ -70,42 +70,45 @@ class BollingerBands:
     """
     Basic knowledge: https://www.investopedia.com/terms/b/bollingerbands.asp
     """
-    def __init__(self, init_data, w=20):
-        init_data['MA'] = init_data['Close'].rolling(window=w).mean()
-        init_data['std'] = init_data['Close'].rolling(window=w).std()
-        init_data['upper'] = init_data['MA20'] + 2 * init_data['std']
-        init_data['lower'] = init_data['MA20'] - 2 * init_data['std']
-        init_data['signal'] = Signal.Hold
-
-        self.data = init_data.copy()
-        self.container = None
-        self.num = self.num + 1
+    def __init__(self, w=20):
         self.window = w
+        self.container = None
+        self.latest_upper = np.nan
+        self.latest_lower = np.nan
 
-        self.latest_upper = self.data['upper'][-1]
-        self.latest_lower = self.data['lower'][-1]
+    def cal_inc(self, data):
+        if len(data) < self.window:
+            return Signal.Hold, np.nan, np.nan, np.nan, np.nan
 
-    def __add_item(self, new_item):
-        self.data.append(new_item, ignore_index=True)
-        self.num = self.num + 1
+        self.container = data['Close'].tail(self.window).copy().values
+        price = self.container[-1]
+        signal = Signal.Hold
 
-    def __call__(self, new_item):
-        self.__add_item(new_item)
-        self.container = self.data['Close'].tail(self.window)
+        if price > self.latest_upper:
+            signal = Signal.Enter
+        elif price < self.latest_lower:
+            signal = Signal.Exit
 
-        mean = self.container.mean()
+        ma = self.container.mean()
         std = self.container.std()
 
-        if self.data['Close'][-1] > self.latest_upper:
-            signal = Signal.Enter
-        elif self.data['Close'][-1] < self.latest_lower:
-            signal = Signal.Exit
-        else:
-            signal = Signal.Stay
+        self.latest_upper = ma + 2 * std
+        self.latest_lower = ma - 2 * std
 
-        self.data['MA'][-1] = mean
-        self.data['std'][-1] = std
-        self.data['signal'][-1] = signal
+        return signal, ma, std, self.latest_upper, self.latest_lower
 
-        return signal
+    def cal(self, data):
+        ma = data['Close'].rolling(window=self.window).mean()
+        std = data['Close'].rolling(window=self.window).std()
+        upper = ma + 2 * std
+        lower = ma - 2 * std
+
+        signal = np.full(ma.shape, Signal.Hold)
+        for i in range(1, len(data)):
+            if data['Close'][i] > upper[i - 1]:
+                signal[i] = Signal.Enter
+            elif data['Close'][i] < lower[i - 1]:
+                signal[i] = Signal.Exit
+
+        return signal, ma, std, upper, lower
 
