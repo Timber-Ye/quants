@@ -9,7 +9,6 @@ import sys
 
 import pandas as pd
 import numpy as np
-from talib import stream
 
 PROJECT_ROOT = os.path.join(os.path.dirname(__file__), '..')
 sys.path.append(PROJECT_ROOT)
