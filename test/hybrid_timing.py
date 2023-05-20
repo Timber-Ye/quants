@@ -36,7 +36,7 @@ def test_offline(config):
     capital = config.SETUP.INIT_CAPITAL
     position = 0
 
-    data['Capital'] = 0.0
+    data['Capital'] = capital
     data['Shares'] = 0.0
     data['Assets'] = capital
     # 初始化资金曲线
