@@ -16,6 +16,7 @@ sys.path.append(PROJECT_ROOT)
 from trend_following.indicators import BollingerBands
 import trend_following.stoploss_order as stpl
 from common.use_api import data_replay
+from utils.cal_sharpe_ratio import cal_sharpe_ratio
 
 
 def test_offline(data, init_capital=1e6):
@@ -29,6 +30,7 @@ def test_offline(data, init_capital=1e6):
 
     data['Capital'] = 0.0
     data['Shares'] = 0.0
+    data['Assets'] = 0.0
     # 初始化资金曲线
     equity_curve = [capital]
 
@@ -40,11 +42,15 @@ def test_offline(data, init_capital=1e6):
         data.loc[i, 'Shares'] = position
 
         # 更新资金曲线
-        equity_curve.append(capital + position * price)
+        equity = capital + position * price
+        equity_curve.append(equity)
+
+        data.loc[i, 'Assets'] = equity
 
     # 计算动量指标
-    data['Return'] = data['Close'].pct_change()
+    data['Return'] = data['Assets'].pct_change()
     data['Momentum'] = data['Return'].rolling(window=12).sum()
+    data['Sharpe'] = cal_sharpe_ratio(data, risk_free_rate=0.0)
 
     data.to_csv(os.path.join(PROJECT_ROOT + '/data/') + 'ma_stop_loss_test_offline.csv')
 
@@ -104,5 +110,5 @@ if __name__ == '__main__':
 
     full_data = pd.read_csv(PROJECT_DATA_DIR + 'SH000300.csv')
 
-    # test_offline(full_data)
-    test_online(full_data)
+    test_offline(full_data)
+    # test_online(full_data)
