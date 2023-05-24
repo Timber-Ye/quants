@@ -110,6 +110,7 @@ class BollingerBands:
             elif data['Close'][i] < lower[i - 1]:
                 signal[i] = Signal.Exit
 
+
         return signal, ma, std, upper, lower
 
 

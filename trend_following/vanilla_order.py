@@ -28,7 +28,8 @@ class Vanilla:
         new_pos = 0
         self.entry_price = 0
         return new_cap, new_pos
-
+    
+  
     def __call__(self, signal, price, capital, position):
         new_cap = capital
         new_pos = position

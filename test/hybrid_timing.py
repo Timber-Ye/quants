@@ -35,7 +35,8 @@ def test_offline(config):
 
     capital = config.SETUP.INIT_CAPITAL
     position = 0
-
+    funding = 0 
+    lever = 0
     data['Capital'] = capital
     data['Shares'] = 0.0
     data['Assets'] = capital
@@ -50,17 +51,30 @@ def test_offline(config):
         signal_trix = data['TRIX'][i]
         signal_boll = data['Bollinger'][i]
 
-        data.loc[i, 'Action'], capital, position = hbo.hybrid_strategy(signal_macd, signal_trix, signal_boll, price,
-                                                                       capital, position, config)
+        data.loc[i, 'Action'], capital, position,funding ,lever= hbo.hybrid_strategy(signal_macd, signal_trix, signal_boll, price,
+                                                                       capital, position, funding,lever,config)
 
         # 更新资金曲线
-        equity = capital + position * price
+        equity = capital + position * price - funding
         equity_curve.append(equity)
 
         data.loc[i, 'Assets'] = equity
-
-    data['Sharpe'] = cal_sharpe_ratio(data, risk_free_rate=0.0)
-
+        data.loc[i, 'Capital'] = capital
+        data.loc[i, 'Shares'] = position
+    data['Returns'] = data['Assets'].pct_change(1)
+    data['Cumulative_Returns'] = (data['Returns']+1).cumprod()
+    data['Sharpe'] = cal_sharpe_ratio(data, lookback_period=len(data)-1,risk_free_rate=0.015)
+    #计算最大回撤 
+    # 计算每日最高累积收益
+    data['max_cum_returns'] = data['Cumulative_Returns'].cummax()
+    # 计算每日回撤
+    data['drawdown'] = data['Cumulative_Returns'] - data['max_cum_returns']
+    # 计算最大回撤
+    max_drawdown = data['drawdown'].min()
+    #计算年化收益率
+    annual_return = data['Returns'].mean() * 250
+    print("max_drawdown:",max_drawdown)
+    print("annual_return=",annual_return)
     data.to_csv(os.path.join(PROJECT_ROOT + '/data/') + 'hybrid_timing_test_offline.csv')
     print("Outputs are saved to data/hybrid_timing_test_offline.csv")
 
