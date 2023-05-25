@@ -76,8 +76,8 @@ def test_offline(config):
         data.loc[i, 'Capital'] = capital  # remains
         data.loc[i, 'Assets'] = capital + data.loc[i, 'Shares'] * data['Close'][i]
 
-    data['Returns'] = np.log(data['Assets'] / data['Assets'].shift(1))
-    data['Cumulative_Returns'] = data['Returns'].cumsum()
+    data['Returns'] = data['Assets'].pct_change(1)
+    data['Cumulative_Returns'] = (data['Returns']+1).cumprod()
     data['Sharpe'] = cal_sharpe_ratio(data, lookback_period=config.SHARPE.LOOKBACK_PERIOD)
 
     data.to_csv(os.path.join(PROJECT_ROOT + '/data/') + 'macd_test_offline.csv')

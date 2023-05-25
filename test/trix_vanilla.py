@@ -8,7 +8,7 @@
 import os
 import sys
 
-import pandas as pd
+import pandas as pdconda
 import numpy as np
 
 PROJECT_ROOT = os.path.join(os.path.dirname(__file__), '..')
@@ -48,13 +48,13 @@ def test_offline(config):
         data.loc[i, 'Shares'] = position
 
         # 更新资金曲线
-        capital = capital + position * price
+        assets = capital + position * price
         equity_curve.append(capital)
-        data.loc[i, 'Assets'] = capital
+        data.loc[i, 'Assets'] = assets
 
     # 计算动量指标
-    data['Returns'] = np.log(data['Assets'] / data['Assets'].shift(1))
-    data['Cumulative_Returns'] = data['Returns'].cumsum()
+    data['Returns'] = data['Assets'].pct_change(1)
+    data['Cumulative_Returns'] = (data['Returns']+1).cumprod()
     data['Sharpe'] = cal_sharpe_ratio(data, lookback_period=config.SHARPE.LOOKBACK_PERIOD)
 
     data.to_csv(os.path.join(PROJECT_ROOT + '/data/') + 'trix_vanilla_test_offline.csv')

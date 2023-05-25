@@ -23,19 +23,20 @@ def cal_sharpe_ratio(data, lookback_period=60, risk_free_rate=0.015):
     # 计算日收益率
     daily_return = data['Assets'].pct_change()
 
+
     sharpe_ratio = [0.0] * lookback_period
 
     # 循环计算每个交易日的信号和风险权重
-    for i in range(lookback_period, len(data)):
+    for i in range( lookback_period,len(data)):
         # 计算过去回溯期的收益率和标准差，计算夏普率
-        returns = daily_return.iloc[i - lookback_period:i]
+        returns = daily_return.iloc[i-lookback_period :i]
         mean_return = returns.mean()
         std_return = returns.std()
 
         if 1e-6 > std_return > -1e-6:
             sharpe_ratio.append(float('-inf'))
         else:
-            sharpe_ratio.append((mean_return - risk_free_rate) / std_return * np.sqrt(252))  # assuming 252 trading days per year
+            sharpe_ratio.append((mean_return*252 - risk_free_rate) / (std_return * np.sqrt(252)))  # assuming 252 trading days per year
 
     return sharpe_ratio
 
